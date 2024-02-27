@@ -1,0 +1,5 @@
+package com.jlcindia.bookstoreweb;
+
+public class Book {
+
+}

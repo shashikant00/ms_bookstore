@@ -1,0 +1,29 @@
+package com.jlcindia.bookstoreweb;
+
+public class UserRating {
+
+	private Integer ratingId;
+	private Integer bookId;
+	private String userId;
+	private double rating;
+	private String review;
+	
+	public UserRating( Integer bookId, String userId, double rating, String review) {
+		super();
+		this.bookId = bookId;
+		this.userId = userId;
+		this.rating = rating;
+		this.review = review;
+	}
+	public UserRating(Integer ratingId, Integer bookId, String userId, double rating, String review) {
+		super();
+		this.ratingId = ratingId;
+		this.bookId = bookId;
+		this.userId = userId;
+		this.rating = rating;
+		this.review = review;
+	}
+
+	public UserRating() {}
+   
+}

@@ -1,0 +1,57 @@
+package com.jlcindia.bookstoreweb;
+
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class BookStoreController {
+
+	static Logger log=LoggerFactory.getLogger(BookStoreController.class);
+	
+	@Autowired
+	BookStoreService bookStoreService;
+	
+	private Map<Integer, Book> mycartMap=new LinkedHashMap<>();
+	
+	@GetMapping("/")
+	public String showIndexPage(Model model,HttpSession session) {
+		System.out.println("**showIndexPage**");
+		
+		List<String> authorsList=bookStoreService.getAuthorsList();
+		List<String> cartList=bookStoreService.getCategoryList();
+		
+		session.setAttribute("MyAuthorList", authorsList);
+		session.setAttribute("MycartList", cartList);
+		
+		return "redirect:/showAllBooks";	
+	}
+	
+	@GetMapping("/showAllBooks")
+	public String showBooksList(HttpServletRequest request,HttpSession session) {
+		System.out.println("**showBooksList**");
+		
+		String author=request.getParameter("author");
+		String category=request.getParameter("category");
+		
+		System.out.println(author);
+		System.out.println(category);
+		
+		Collection<Book> blist=bookStoreService.getMyBooks(author, category);
+		session.setAttribute("MyBooksList", blist);
+		session.setAttribute("MyCart", mycartMap);
+		
+		return "showBooksList";
+	}
+}

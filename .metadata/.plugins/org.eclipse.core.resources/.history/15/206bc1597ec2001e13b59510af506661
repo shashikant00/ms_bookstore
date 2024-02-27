@@ -1,0 +1,128 @@
+package com.jlcindia.bookstoreweb;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class BookStoreServiceImpl implements BookStoreService{
+
+	static Logger log=LoggerFactory.getLogger(BookStoreServiceImpl.class);
+	
+	Map<Integer,Book> booksMap=new LinkedHashMap<>();
+	
+	@Override
+	public List<String> getAuthorsList() {
+		List<String> authorsList=new ArrayList<>();
+		authorsList.add("All Authors");
+		authorsList.add("Srinivas");
+		authorsList.add("Vas");
+		authorsList.add("Sri");
+		return authorsList;
+	}
+
+	@Override
+	public List<String> getCategoryList() {
+		List<String> catList=new ArrayList<>();
+		catList.add("All Categories");
+		catList.add("Web");
+		catList.add("Spring");
+		return catList;
+	}
+
+	@Override
+	public List<Book> getMyBooks(String author, String category) {
+		System.out.println("BookStoreServiceImpl  - getMyBooks()");
+		
+		if(author==null || author.length()==0)
+		{
+			author="All Authors";
+		}
+		if(category==null || category.length()==0) {
+			category="All Categories";
+		}
+		//Invoke BookSearchMS
+		RestTemplate bookSearchRest=new RestTemplate();
+		String endpoint="http://localhost:8000/mybooks/"+author+"/"+category;
+		
+		List<Map> list=bookSearchRest.getForObject(endpoint, List.class);
+		List<Book> bookList=new ArrayList<>();
+		
+		for(Map mymap : list)
+		{
+			Book mybook=convertMapToBook(mymap);
+			bookList.add(mybook);
+			booksMap.put(mybook.getBookId(), mybook);
+			
+		}
+		return bookList;
+	}
+
+	@Override
+	public Book getBookByBookId(Integer bookId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BookInfo getBookInfoByBookId(Integer bookId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void placeOrder(Map<Integer, Book> mycartMap) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Order> getMyOrders(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addUserRating(UserRating userRating) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<UserRating> getMyRatings(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private UserRating convertMapToUserRating(Map map)
+	{
+		UserRating rating=new UserRating();
+		
+		rating.setRatingId(new Integer(map.get("ratingId").toString()));
+		rating.setUserId(map.get("userId").toString());
+		rating.setBookId(new Integer(map.get("bookId").toString()));
+		rating.setRating(new Double(map.get("rating").toString()));
+		rating.setReview(map.get("review").toString());
+		
+		return rating;
+	}
+	
+	private Book convertMapToBook(Map map) {
+		
+		Book mybook=new Book();
+		
+		mybook.setBookId(Integer.parseInt(map.get("bookId").toString()));
+		mybook.setBookName((map.get("bookName").toString()));
+		mybook.setAuthor((map.get("author").toString()));
+		mybook.setPublications(map.get("publications").toString());
+		mybook.setCategory(map.get("category").toString());
+		
+		return mybook;
+	}
+}

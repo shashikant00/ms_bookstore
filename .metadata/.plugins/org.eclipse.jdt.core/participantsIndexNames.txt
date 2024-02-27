@@ -1,0 +1,3 @@
+INDEX VERSION 1.134
+C:\SBMS\BookStore-V-1.0\MyLabs\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2784769392.index
+\MyBookStoreWeb\src\main\java
